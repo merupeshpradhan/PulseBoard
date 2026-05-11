@@ -1,13 +1,14 @@
-import { useState } from "react";
+// Wrap all pages with layout
 
-function App() {
-  const [count, setCount] = useState(0);
+import AppRoutes from "./routes/AppRoutes";
+import Layout from "./components/Layout";
 
+const App = () => {
   return (
-    <>
-      <h1>Rupesh Pulse Board</h1>
-    </>
+    <Layout>
+      <AppRoutes />
+    </Layout>
   );
-}
+};
 
 export default App;
