@@ -36,9 +36,25 @@ const submitResponse = async (pollId, data, user, io) => {
     throw ApiError.notFound("Poll not found");
   }
 
-  // Expiry check
+  // Expiry validation
   if (new Date() > new Date(poll.expiresAt)) {
     throw ApiError.badRequest("Poll expired");
+  }
+
+  // Auth validation
+  if (!poll.allowAnonymous && !user) {
+    throw ApiError.unauthorized("Login required to submit response");
+  }
+
+  // Prevent duplicate response
+  if (user) {
+    const alreadySubmitted = poll.responses.find(
+      (response) => response.user?.toString() === user.id.toString(),
+    );
+
+    if (alreadySubmitted) {
+      throw ApiError.badRequest("You already submitted this poll");
+    }
   }
 
   // Save response
@@ -49,7 +65,7 @@ const submitResponse = async (pollId, data, user, io) => {
 
   await poll.save();
 
-  // Realtime socket update
+  // Realtime update
   io.emit("poll-response-updated", {
     pollId,
     totalResponses: poll.responses.length,
@@ -93,6 +109,22 @@ const getAnalytics = async (pollId) => {
   };
 };
 
+// Public published results
+const getPublicResults = async (pollId) => {
+  const poll = await Poll.findById(pollId);
+
+  if (!poll) {
+    throw ApiError.notFound("Poll not found");
+  }
+
+  // Check published
+  if (!poll.isPublished) {
+    throw ApiError.forbidden("Results not published yet");
+  }
+
+  return poll;
+};
+
 // Publish results
 const publishResults = async (pollId) => {
   const poll = await Poll.findByIdAndUpdate(
@@ -105,7 +137,18 @@ const publishResults = async (pollId) => {
     },
   );
 
+  if (!poll) {
+    throw ApiError.notFound("Poll not found");
+  }
+
   return poll;
 };
 
-export { createPoll, getPoll, submitResponse, getAnalytics, publishResults };
+export {
+  createPoll,
+  getPoll,
+  submitResponse,
+  getAnalytics,
+  getPublicResults,
+  publishResults,
+};
