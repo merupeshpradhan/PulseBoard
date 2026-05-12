@@ -7,9 +7,8 @@
 // 5. Hides dashboard/create on public poll page
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import { useEffect, useState } from "react";
-
+import { HiMenu, HiX } from "react-icons/hi";
 import api from "../services/api";
 
 const Navbar = () => {
@@ -24,6 +23,8 @@ const Navbar = () => {
 
   // current user state
   const [user, setUser] = useState(null);
+  // mobile menu state
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // -----------------------------
   // FETCH CURRENT USER
@@ -69,26 +70,32 @@ const Navbar = () => {
   const isPublicPollPage = location.pathname.startsWith("/poll/");
 
   return (
-    <nav className="bg-white shadow px-2 sm:px-4 py-3 flex justify-between items-center w-full sticky top-0 z-20">
+    <nav className="bg-white/80 backdrop-blur-md shadow-lg px-4 sm:px-8 py-3 flex justify-between items-center w-full sticky top-0 z-30 rounded-b-2xl border-b border-gray-200">
       {/* LOGO */}
-      <h1 className="font-bold text-lg text-blue-700 tracking-tight select-none">
-        Poll Platform
+      <h1 className="font-extrabold text-xl sm:text-2xl text-blue-700 tracking-tight select-none drop-shadow">
+        PulseBoard
       </h1>
 
-      <div className="flex gap-2 sm:gap-4 items-center flex-wrap">
-        {/* IF USER LOGGED IN */}
+      {/* Hamburger for mobile */}
+      <button
+        className="sm:hidden flex items-center text-2xl text-blue-700 focus:outline-none ml-auto"
+        onClick={() => setMenuOpen((prev) => !prev)}
+        aria-label={menuOpen ? "Close menu" : "Open menu"}
+      >
+        {menuOpen ? <HiX /> : <HiMenu />}
+      </button>
+
+      {/* Desktop menu */}
+      <div className="hidden sm:flex gap-2 sm:gap-4 items-center flex-wrap">
         {token ? (
           <>
-            {/* show username */}
             <p className="font-medium text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-xs">
               Hello, {user?.name || "User"}
             </p>
-
-            {/* hide dashboard/create on public poll page */}
             {!isPublicPollPage && (
               <>
                 <Link
-                  to="/"
+                  to="/dashboard"
                   className="hover:text-blue-600 transition-colors text-sm sm:text-base"
                 >
                   Dashboard
@@ -107,8 +114,6 @@ const Navbar = () => {
                 </Link>
               </>
             )}
-
-            {/* logout button */}
             <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm sm:text-base transition-colors"
@@ -118,22 +123,85 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            {/* NOT LOGGED IN */}
             <Link
-              to="/login"
-              className="hover:text-blue-600 transition-colors text-sm sm:text-base"
+              to="/"
+              className="px-4 py-1 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm sm:text-base transition-colors shadow"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="hover:text-blue-600 transition-colors text-sm sm:text-base"
+              className="px-4 py-1 rounded-lg bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm sm:text-base transition-colors shadow"
             >
               Register
             </Link>
           </>
         )}
       </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="absolute top-16 left-0 w-full bg-white/95 backdrop-blur-md shadow-lg flex flex-col items-center gap-4 py-6 z-40 sm:hidden animate-fade-in rounded-b-2xl border-b border-gray-200">
+          {token ? (
+            <>
+              <p className="font-medium text-gray-700 text-base truncate max-w-[160px]">
+                Hello, {user?.name || "User"}
+              </p>
+              {!isPublicPollPage && (
+                <>
+                  <Link
+                    to="/"
+                    className="hover:text-blue-600 transition-colors text-base"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/profile"
+                    className="hover:text-blue-600 transition-colors text-base"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    to="/create"
+                    className="hover:text-blue-600 transition-colors text-base"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Create Poll
+                  </Link>
+                </>
+              )}
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-base transition-colors mt-2"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold text-base transition-colors shadow w-32 text-center"
+                onClick={() => setMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white font-semibold text-base transition-colors shadow w-32 text-center"
+                onClick={() => setMenuOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

@@ -86,74 +86,77 @@ const CreatePoll = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-2 sm:p-4">
+    <div className="w-full max-w-2xl mx-auto p-2 sm:p-4 mt-10">
       <Toaster position="top-right" />
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-blue-700">
-        Create Poll
-      </h1>
+      <div className="bg-white/90 rounded-2xl shadow-xl backdrop-blur-md p-8 flex flex-col gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-700 text-center">
+          Create Poll
+        </h1>
 
-      {/* TITLE */}
-      <input
-        type="text"
-        placeholder="Poll Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
-      />
+        {/* TITLE */}
+        <input
+          type="text"
+          placeholder="Poll Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full border border-gray-300 p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+        />
 
-      {/* DESCRIPTION */}
-      <textarea
-        placeholder="Poll Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
-        rows={3}
-      />
+        {/* DESCRIPTION */}
+        <textarea
+          placeholder="Poll Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full border border-gray-300 p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+          rows={3}
+        />
 
-      {/* QUESTION */}
-      <input
-        type="text"
-        placeholder="Question"
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
-      />
-      {/* OPTIONS */}
-      <div className="space-y-3 mb-4">
-        {options.map((option, index) => (
-          <input
-            key={index}
-            type="text"
-            placeholder={`Option ${index + 1}`}
-            value={option}
-            onChange={(e) => handleOptionChange(index, e.target.value)}
-            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
-          />
-        ))}
+        {/* QUESTION */}
+        <input
+          type="text"
+          placeholder="Question"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className="w-full border border-gray-300 p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+        />
+
+        {/* OPTIONS */}
+        <div className="space-y-3 mb-2">
+          {options.map((option, index) => (
+            <input
+              key={index}
+              type="text"
+              placeholder={`Option ${index + 1}`}
+              value={option}
+              onChange={(e) => handleOptionChange(index, e.target.value)}
+              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+            />
+          ))}
+        </div>
+        {/* ADD OPTION BUTTON */}
+        <button
+          onClick={addOption}
+          className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-2 text-sm sm:text-base transition-colors w-full font-semibold"
+        >
+          + Add Option
+        </button>
+
+        {/* EXPIRY DATE */}
+        <input
+          type="datetime-local"
+          value={expiresAt}
+          onChange={(e) => setExpiresAt(e.target.value)}
+          className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+        />
+
+        {/* CREATE BUTTON */}
+        <button
+          onClick={createPoll}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded text-base font-semibold transition-colors shadow"
+        >
+          Create Poll
+        </button>
       </div>
-      {/* ADD OPTION BUTTON */}
-      <button
-        onClick={addOption}
-        className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-4 text-sm sm:text-base transition-colors"
-      >
-        + Add Option
-      </button>
-
-      {/* EXPIRY DATE */}
-      <input
-        type="datetime-local"
-        value={expiresAt}
-        onChange={(e) => setExpiresAt(e.target.value)}
-        className="w-full border border-gray-300 p-3 rounded mb-6 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
-      />
-
-      {/* CREATE BUTTON */}
-      <button
-        onClick={createPoll}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded text-base font-semibold transition-colors shadow"
-      >
-        Create Poll
-      </button>
     </div>
   );
 };

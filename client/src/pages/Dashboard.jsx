@@ -63,10 +63,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-2 sm:p-4">
+    <div className="w-full max-w-5xl mx-auto p-2 sm:p-6">
       <Toaster position="top-right" />
       {/* HEADER */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-3 w-full">
         <h1 className="text-2xl sm:text-3xl font-bold text-blue-700">
           📊 My Poll Dashboard
         </h1>
@@ -87,14 +87,14 @@ const Dashboard = () => {
       )}
 
       {/* POLLS */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full">
         {polls.map((poll) => (
           <div
             key={poll._id}
-            className="p-4 border rounded-lg shadow bg-white flex flex-col justify-between min-h-[200px]"
+            className="p-5 border border-gray-200 rounded-2xl shadow-lg bg-white/90 backdrop-blur-md flex flex-col justify-between min-h-[220px] hover:scale-[1.025] hover:shadow-2xl transition-all duration-200 overflow-hidden"
           >
             {/* TITLE */}
-            <h2 className="text-lg font-semibold mb-1 truncate">
+            <h2 className="text-lg font-semibold mb-1 truncate break-words">
               {poll.title}
             </h2>
 
@@ -113,7 +113,7 @@ const Dashboard = () => {
             </p>
 
             {/* ACTION BUTTONS */}
-            <div className="flex gap-2 mt-3 flex-wrap">
+            <div className="flex gap-2 mt-3 flex-wrap w-full">
               <button
                 onClick={() => navigate(`/poll/${poll._id}`)}
                 className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm sm:text-base transition-colors"

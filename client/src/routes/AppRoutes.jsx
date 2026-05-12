@@ -14,10 +14,10 @@ import Profile from "../pages/Profile";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/create" element={<CreatePoll />} />
       <Route path="/poll/:id" element={<PollPage />} />
