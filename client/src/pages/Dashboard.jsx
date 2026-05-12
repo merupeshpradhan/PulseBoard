@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -47,30 +47,33 @@ const Dashboard = () => {
   // SHARE LINK FUNCTION ⭐ IMPORTANT
   const sharePoll = (id) => {
     const link = `${window.location.origin}/poll/${id}`;
-
     navigator.clipboard.writeText(link);
-
     toast.success("Poll link copied 📋");
   };
 
   // LOADING
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <h2 className="text-xl font-semibold">Loading dashboard...</h2>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <h2 className="text-xl font-semibold animate-pulse text-blue-700">
+          Loading dashboard...
+        </h2>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
+    <div className="w-full max-w-5xl mx-auto p-2 sm:p-4">
+      <Toaster position="top-right" />
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">📊 My Poll Dashboard</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+        <h1 className="text-2xl sm:text-3xl font-bold text-blue-700">
+          📊 My Poll Dashboard
+        </h1>
 
         <button
           onClick={() => navigate("/create")}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-base font-semibold transition-colors shadow"
         >
           + Create Poll
         </button>
@@ -78,29 +81,34 @@ const Dashboard = () => {
 
       {/* EMPTY */}
       {polls.length === 0 && (
-        <div className="text-center text-gray-500 mt-20">
+        <div className="text-center text-gray-500 mt-20 text-base sm:text-lg">
           No polls created yet
         </div>
       )}
 
       {/* POLLS */}
-      <div className="grid gap-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {polls.map((poll) => (
-          <div key={poll._id} className="p-4 border rounded-lg shadow bg-white">
+          <div
+            key={poll._id}
+            className="p-4 border rounded-lg shadow bg-white flex flex-col justify-between min-h-[200px]"
+          >
             {/* TITLE */}
-            <h2 className="text-lg font-semibold">{poll.title}</h2>
+            <h2 className="text-lg font-semibold mb-1 truncate">
+              {poll.title}
+            </h2>
 
             {/* INFO */}
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 mb-1">
               Responses: {poll.responses?.length || 0}
             </p>
 
-            <p className="text-sm">
+            <p className="text-sm mb-2">
               Status:{" "}
               {poll.isPublished ? (
-                <span className="text-green-600">Published</span>
+                <span className="text-green-600 font-semibold">Published</span>
               ) : (
-                <span className="text-red-500">Draft</span>
+                <span className="text-red-500 font-semibold">Draft</span>
               )}
             </p>
 
@@ -108,21 +116,21 @@ const Dashboard = () => {
             <div className="flex gap-2 mt-3 flex-wrap">
               <button
                 onClick={() => navigate(`/poll/${poll._id}`)}
-                className="px-3 py-1 bg-gray-200 rounded"
+                className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm sm:text-base transition-colors"
               >
                 View
               </button>
 
               <button
                 onClick={() => sharePoll(poll._id)}
-                className="px-3 py-1 bg-green-500 text-white rounded"
+                className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-sm sm:text-base transition-colors"
               >
                 Share Link
               </button>
 
               <button
                 onClick={() => navigate(`/analytics/${poll._id}`)}
-                className="px-3 py-1 bg-blue-200 rounded"
+                className="px-3 py-1 bg-blue-200 hover:bg-blue-300 rounded text-sm sm:text-base transition-colors"
               >
                 Analytics
               </button>
@@ -137,7 +145,7 @@ const Dashboard = () => {
               {poll.isPublished && (
                 <button
                   onClick={() => navigate(`/results/${poll._id}`)}
-                  className="px-3 py-1 bg-green-200 rounded"
+                  className="px-3 py-1 bg-green-200 hover:bg-green-300 rounded text-sm sm:text-base transition-colors"
                 >
                   Results
                 </button>
@@ -146,7 +154,7 @@ const Dashboard = () => {
               {!poll.isPublished && (
                 <button
                   onClick={() => publishPoll(poll._id)}
-                  className="px-3 py-1 bg-purple-600 text-white rounded"
+                  className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm sm:text-base transition-colors"
                 >
                   Publish
                 </button>

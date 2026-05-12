@@ -7,9 +7,9 @@
 // 5. Create poll
 
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 
 const CreatePoll = () => {
   const navigate = useNavigate();
@@ -86,8 +86,11 @@ const CreatePoll = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Create Poll</h1>
+    <div className="w-full max-w-2xl mx-auto p-2 sm:p-4">
+      <Toaster position="top-right" />
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-blue-700">
+        Create Poll
+      </h1>
 
       {/* TITLE */}
       <input
@@ -95,7 +98,7 @@ const CreatePoll = () => {
         placeholder="Poll Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full border p-3 rounded mb-4"
+        className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
       />
 
       {/* DESCRIPTION */}
@@ -103,7 +106,8 @@ const CreatePoll = () => {
         placeholder="Poll Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        className="w-full border p-3 rounded mb-4"
+        className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+        rows={3}
       />
 
       {/* QUESTION */}
@@ -112,7 +116,7 @@ const CreatePoll = () => {
         placeholder="Question"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
-        className="w-full border p-3 rounded mb-4"
+        className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
       />
       {/* OPTIONS */}
       <div className="space-y-3 mb-4">
@@ -123,14 +127,14 @@ const CreatePoll = () => {
             placeholder={`Option ${index + 1}`}
             value={option}
             onChange={(e) => handleOptionChange(index, e.target.value)}
-            className="w-full border p-3 rounded"
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
           />
         ))}
       </div>
       {/* ADD OPTION BUTTON */}
       <button
         onClick={addOption}
-        className="bg-gray-200 px-4 py-2 rounded mb-4"
+        className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-4 text-sm sm:text-base transition-colors"
       >
         + Add Option
       </button>
@@ -140,13 +144,13 @@ const CreatePoll = () => {
         type="datetime-local"
         value={expiresAt}
         onChange={(e) => setExpiresAt(e.target.value)}
-        className="w-full border p-3 rounded mb-6"
+        className="w-full border border-gray-300 p-3 rounded mb-6 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
       />
 
       {/* CREATE BUTTON */}
       <button
         onClick={createPoll}
-        className="w-full bg-blue-600 text-white py-3 rounded"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded text-base font-semibold transition-colors shadow"
       >
         Create Poll
       </button>
