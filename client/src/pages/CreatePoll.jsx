@@ -1,84 +1,152 @@
+// CreatePoll.jsx
+// This page allows users to:
+// 1. Create poll title
+// 2. Add description
+// 3. Add expiry date
+// 4. Add options dynamically
+// 5. Create poll
+
 import { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CreatePoll = () => {
   const navigate = useNavigate();
 
+  // poll title
   const [title, setTitle] = useState("");
+
+  // poll description
+  const [description, setDescription] = useState("");
+
+  // question
   const [question, setQuestion] = useState("");
 
+  // expiry date
+  const [expiresAt, setExpiresAt] = useState("");
+
+  // options array
   const [options, setOptions] = useState(["", ""]);
 
-  // add new option
+  // -----------------------------
+  // HANDLE OPTION CHANGE
+  // -----------------------------
+  const handleOptionChange = (index, value) => {
+    const updated = [...options];
+
+    updated[index] = value;
+
+    setOptions(updated);
+  };
+
+  // -----------------------------
+  // ADD NEW OPTION
+  // -----------------------------
   const addOption = () => {
     setOptions([...options, ""]);
   };
 
-  // update option
-  const updateOption = (value, index) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setOptions(newOptions);
-  };
-
-  // create poll
+  // -----------------------------
+  // CREATE POLL
+  // -----------------------------
   const createPoll = async () => {
-    await api.post("/polls/create", {
-      title,
-      allowAnonymous: true,
-      expiresAt: "2027-01-01T00:00:00.000Z",
-      questions: [
-        {
-          question,
-          options: options.filter((opt) => opt.trim() !== ""),
-        },
-      ],
-    });
+    try {
+      // remove empty options
+      const cleanedOptions = options.filter((opt) => opt.trim() !== "");
 
-    navigate("/");
+      // minimum 2 options required
+      if (cleanedOptions.length < 2) {
+        toast.error("At least 2 options required");
+
+        return;
+      }
+
+      // send request to backend
+      await api.post("/polls/create", {
+        title,
+        description,
+        allowAnonymous: true,
+        expiresAt,
+        questions: [
+          {
+            question,
+            required: true,
+            options: cleanedOptions,
+          },
+        ],
+      });
+
+      toast.success("Poll created successfully");
+
+      navigate("/");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to create poll");
+    }
   };
 
   return (
-    <div className="max-w-xl mx-auto p-4">
-      <h1 className="text-xl font-bold mb-4">Create Poll</h1>
+    <div className="max-w-2xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">Create Poll</h1>
 
       {/* TITLE */}
       <input
-        className="border p-2 w-full mb-3"
-        placeholder="Title"
+        type="text"
+        placeholder="Poll Title"
+        value={title}
         onChange={(e) => setTitle(e.target.value)}
+        className="w-full border p-3 rounded mb-4"
+      />
+
+      {/* DESCRIPTION */}
+      <textarea
+        placeholder="Poll Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        className="w-full border p-3 rounded mb-4"
       />
 
       {/* QUESTION */}
       <input
-        className="border p-2 w-full mb-3"
+        type="text"
         placeholder="Question"
+        value={question}
         onChange={(e) => setQuestion(e.target.value)}
+        className="w-full border p-3 rounded mb-4"
       />
-
       {/* OPTIONS */}
-      <h3 className="font-semibold mb-2">Options</h3>
-
-      {options.map((opt, index) => (
-        <input
-          key={index}
-          className="border p-2 w-full mb-2"
-          placeholder={`Option ${index + 1}`}
-          value={opt}
-          onChange={(e) => updateOption(e.target.value, index)}
-        />
-      ))}
-
+      <div className="space-y-3 mb-4">
+        {options.map((option, index) => (
+          <input
+            key={index}
+            type="text"
+            placeholder={`Option ${index + 1}`}
+            value={option}
+            onChange={(e) => handleOptionChange(index, e.target.value)}
+            className="w-full border p-3 rounded"
+          />
+        ))}
+      </div>
       {/* ADD OPTION BUTTON */}
-      <button onClick={addOption} className="bg-gray-200 px-3 py-1 mb-3">
+      <button
+        onClick={addOption}
+        className="bg-gray-200 px-4 py-2 rounded mb-4"
+      >
         + Add Option
       </button>
+
+      {/* EXPIRY DATE */}
+      <input
+        type="datetime-local"
+        value={expiresAt}
+        onChange={(e) => setExpiresAt(e.target.value)}
+        className="w-full border p-3 rounded mb-6"
+      />
 
       {/* CREATE BUTTON */}
       <button
         onClick={createPoll}
-        className="bg-blue-600 text-white px-4 py-2 w-full"
+        className="w-full bg-blue-600 text-white py-3 rounded"
       >
         Create Poll
       </button>

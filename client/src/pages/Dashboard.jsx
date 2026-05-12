@@ -37,9 +37,7 @@ const Dashboard = () => {
       toast.success("Poll published 🎉");
 
       setPolls((prev) =>
-        prev.map((p) =>
-          p._id === id ? { ...p, isPublished: true } : p
-        )
+        prev.map((p) => (p._id === id ? { ...p, isPublished: true } : p)),
       );
     } catch (err) {
       toast.error("Failed to publish");
@@ -66,7 +64,6 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-4">
-
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">📊 My Poll Dashboard</h1>
@@ -89,15 +86,9 @@ const Dashboard = () => {
       {/* POLLS */}
       <div className="grid gap-4">
         {polls.map((poll) => (
-          <div
-            key={poll._id}
-            className="p-4 border rounded-lg shadow bg-white"
-          >
-
+          <div key={poll._id} className="p-4 border rounded-lg shadow bg-white">
             {/* TITLE */}
-            <h2 className="text-lg font-semibold">
-              {poll.title}
-            </h2>
+            <h2 className="text-lg font-semibold">{poll.title}</h2>
 
             {/* INFO */}
             <p className="text-sm text-gray-500">
@@ -115,7 +106,6 @@ const Dashboard = () => {
 
             {/* ACTION BUTTONS */}
             <div className="flex gap-2 mt-3 flex-wrap">
-
               <button
                 onClick={() => navigate(`/poll/${poll._id}`)}
                 className="px-3 py-1 bg-gray-200 rounded"
@@ -124,31 +114,34 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={() =>
-                  sharePoll(poll._id)
-                }
+                onClick={() => sharePoll(poll._id)}
                 className="px-3 py-1 bg-green-500 text-white rounded"
               >
                 Share Link
               </button>
 
               <button
-                onClick={() =>
-                  navigate(`/analytics/${poll._id}`)
-                }
+                onClick={() => navigate(`/analytics/${poll._id}`)}
                 className="px-3 py-1 bg-blue-200 rounded"
               >
                 Analytics
               </button>
 
-              <button
-                onClick={() =>
-                  navigate(`/results/${poll._id}`)
-                }
-                className="px-3 py-1 bg-green-200 rounded"
-              >
-                Results
-              </button>
+              {/*
+                RESULTS BUTTON
+                Only visible after poll is published
+                This prevents users from opening
+                public results before publish
+              */}
+
+              {poll.isPublished && (
+                <button
+                  onClick={() => navigate(`/results/${poll._id}`)}
+                  className="px-3 py-1 bg-green-200 rounded"
+                >
+                  Results
+                </button>
+              )}
 
               {!poll.isPublished && (
                 <button
@@ -158,7 +151,6 @@ const Dashboard = () => {
                   Publish
                 </button>
               )}
-
             </div>
           </div>
         ))}
