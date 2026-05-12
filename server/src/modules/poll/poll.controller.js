@@ -16,6 +16,18 @@ const getPoll = async (req, res) => {
   ApiResponse.ok(res, "Poll fetched successfully", poll);
 };
 
+// Get my polls
+const getMyPolls = async (req, res) => {
+  const userId = req.user?.id || req.user?._id;
+  if (!userId) {
+    throw new Error("User not found in request");
+  }
+
+  const polls = await pollService.getMyPolls(userId);
+
+  ApiResponse.ok(res, "My polls fetched successfully", polls);
+};
+
 // Submit response
 const submitResponse = async (req, res) => {
   const io = req.app.get("io");
@@ -54,6 +66,7 @@ const getPublicResults = async (req, res) => {
 export {
   createPoll,
   getPoll,
+  getMyPolls,
   submitResponse,
   getAnalytics,
   publishResults,

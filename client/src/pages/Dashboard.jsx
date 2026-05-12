@@ -1,7 +1,4 @@
 // Dashboard.jsx
-// This is the main user dashboard
-// Shows all created polls + actions like:
-// View, Analytics, Publish, Results
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,9 +11,7 @@ const Dashboard = () => {
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // -----------------------------
-  // FETCH USER POLLS
-  // -----------------------------
+  // FETCH POLLS
   useEffect(() => {
     const fetchPolls = async () => {
       try {
@@ -34,9 +29,7 @@ const Dashboard = () => {
     fetchPolls();
   }, []);
 
-  // -----------------------------
   // PUBLISH POLL
-  // -----------------------------
   const publishPoll = async (id) => {
     try {
       await api.patch(`/polls/publish/${id}`);
@@ -44,16 +37,25 @@ const Dashboard = () => {
       toast.success("Poll published 🎉");
 
       setPolls((prev) =>
-        prev.map((p) => (p._id === id ? { ...p, isPublished: true } : p)),
+        prev.map((p) =>
+          p._id === id ? { ...p, isPublished: true } : p
+        )
       );
     } catch (err) {
       toast.error("Failed to publish");
     }
   };
 
-  // -----------------------------
-  // LOADING UI
-  // -----------------------------
+  // SHARE LINK FUNCTION ⭐ IMPORTANT
+  const sharePoll = (id) => {
+    const link = `${window.location.origin}/poll/${id}`;
+
+    navigator.clipboard.writeText(link);
+
+    toast.success("Poll link copied 📋");
+  };
+
+  // LOADING
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -62,11 +64,9 @@ const Dashboard = () => {
     );
   }
 
-  // -----------------------------
-  // MAIN UI
-  // -----------------------------
   return (
     <div className="max-w-5xl mx-auto p-4">
+
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">📊 My Poll Dashboard</h1>
@@ -79,21 +79,27 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* EMPTY STATE */}
+      {/* EMPTY */}
       {polls.length === 0 && (
         <div className="text-center text-gray-500 mt-20">
           No polls created yet
         </div>
       )}
 
-      {/* POLL CARDS */}
+      {/* POLLS */}
       <div className="grid gap-4">
         {polls.map((poll) => (
-          <div key={poll._id} className="p-4 border rounded-lg shadow bg-white">
-            {/* TITLE */}
-            <h2 className="text-lg font-semibold">{poll.title}</h2>
+          <div
+            key={poll._id}
+            className="p-4 border rounded-lg shadow bg-white"
+          >
 
-            {/* STATUS */}
+            {/* TITLE */}
+            <h2 className="text-lg font-semibold">
+              {poll.title}
+            </h2>
+
+            {/* INFO */}
             <p className="text-sm text-gray-500">
               Responses: {poll.responses?.length || 0}
             </p>
@@ -107,8 +113,9 @@ const Dashboard = () => {
               )}
             </p>
 
-            {/* ACTIONS */}
+            {/* ACTION BUTTONS */}
             <div className="flex gap-2 mt-3 flex-wrap">
+
               <button
                 onClick={() => navigate(`/poll/${poll._id}`)}
                 className="px-3 py-1 bg-gray-200 rounded"
@@ -117,14 +124,27 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={() => navigate(`/analytics/${poll._id}`)}
+                onClick={() =>
+                  sharePoll(poll._id)
+                }
+                className="px-3 py-1 bg-green-500 text-white rounded"
+              >
+                Share Link
+              </button>
+
+              <button
+                onClick={() =>
+                  navigate(`/analytics/${poll._id}`)
+                }
                 className="px-3 py-1 bg-blue-200 rounded"
               >
                 Analytics
               </button>
 
               <button
-                onClick={() => navigate(`/results/${poll._id}`)}
+                onClick={() =>
+                  navigate(`/results/${poll._id}`)
+                }
                 className="px-3 py-1 bg-green-200 rounded"
               >
                 Results
@@ -138,6 +158,7 @@ const Dashboard = () => {
                   Publish
                 </button>
               )}
+
             </div>
           </div>
         ))}

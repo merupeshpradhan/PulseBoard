@@ -9,6 +9,7 @@ import CreatePoll from "../pages/CreatePoll";
 import PollPage from "../pages/PollPage";
 import Analytics from "../pages/Analytics";
 import ResultsPage from "../pages/ResultsPage";
+import Profile from "../pages/Profile";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
 
       <Route path="/" element={<Dashboard />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="/create" element={<CreatePoll />} />
       <Route path="/poll/:id" element={<PollPage />} />
       <Route path="/analytics/:id" element={<Analytics />} />

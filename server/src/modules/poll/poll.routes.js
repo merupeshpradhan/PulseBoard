@@ -39,6 +39,9 @@ router.get("/analytics/:id", authenticate, controller.getAnalytics);
 // Publish results
 router.patch("/publish/:id", authenticate, controller.publishResults);
 
+// Own poll
+router.get("/my-polls", authenticate, controller.getMyPolls);
+
 // Public poll
 router.get("/:id", controller.getPoll);
 

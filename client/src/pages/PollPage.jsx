@@ -1,44 +1,55 @@
 // PollPage.jsx
-// This page is used for:
-// 1. Showing a public poll
-// 2. Allowing user to vote
-// 3. Handling authentication optional voting
-// 4. Receiving realtime updates via socket.io
+// This page:
+// 1. Shows public poll
+// 2. Allows users to vote
+// 3. Supports anonymous voting
+// 4. Shows realtime updates
+// 5. Prevents voting after poll expiry
 
 import { useEffect, useState } from "react";
+
 import { useParams } from "react-router-dom";
+
 import api from "../services/api";
+
 import socket from "../socket/socket";
+
 import toast from "react-hot-toast";
 
 const PollPage = () => {
+  // get poll id from URL
   const { id } = useParams();
 
   // store poll data
   const [poll, setPoll] = useState(null);
 
-  // selected answers (single choice per question)
+  // selected answers
   const [selectedAnswers, setSelectedAnswers] = useState({});
 
   // loading state
   const [loading, setLoading] = useState(true);
 
-  // submit state
+  // submit loading state
   const [submitting, setSubmitting] = useState(false);
 
   // -----------------------------
-  // LOAD POLL
+  // FETCH POLL DATA
   // -----------------------------
   useEffect(() => {
     const fetchPoll = async () => {
       try {
+        // start loading
         setLoading(true);
 
+        // backend request
         const res = await api.get(`/polls/${id}`);
+
+        // save poll data
         setPoll(res.data.data);
       } catch (err) {
         toast.error(err.response?.data?.message || "Failed to load poll");
       } finally {
+        // stop loading
         setLoading(false);
       }
     };
@@ -51,17 +62,20 @@ const PollPage = () => {
   // -----------------------------
   useEffect(() => {
     socket.on("poll-response-updated", (data) => {
-      // update UI in real-time (optional enhancement)
+      // check current poll
       if (data.pollId === id) {
         toast.success("New response received 🔥");
       }
     });
 
-    return () => socket.off("poll-response-updated");
+    // cleanup listener
+    return () => {
+      socket.off("poll-response-updated");
+    };
   }, [id]);
 
   // -----------------------------
-  // SELECT OPTION
+  // HANDLE OPTION SELECT
   // -----------------------------
   const handleSelect = (questionId, option) => {
     setSelectedAnswers((prev) => ({
@@ -71,25 +85,58 @@ const PollPage = () => {
   };
 
   // -----------------------------
-  // SUBMIT VOTE
+  // SUBMIT VOTE FUNCTION
   // -----------------------------
   const submitVote = async () => {
+    // stop if no poll
     if (!poll) return;
 
     try {
+      // start loading
       setSubmitting(true);
 
-      const answers = poll.questions.map((q) => ({
-        questionId: q._id,
-        selectedOption: selectedAnswers[q._id],
-      }));
+      // answers array
+      const answers = [];
 
-      await api.post(`/polls/submit/${id}`, { answers });
+      // loop questions
+      for (const q of poll.questions) {
+        // selected option
+        const selectedOption = selectedAnswers[q._id];
 
+        // validate option selected
+        if (!selectedOption) {
+          toast.error(`Please answer: ${q.question}`);
+
+          setSubmitting(false);
+
+          return;
+        }
+
+        // push valid answer
+        answers.push({
+          questionId: q._id,
+
+          selectedOption,
+        });
+      }
+
+      // debug log
+      console.log("Sending Answers:", answers);
+
+      // send vote to backend
+      await api.post(`/polls/submit/${id}`, {
+        answers,
+      });
+
+      // success message
       toast.success("Vote submitted successfully ✅");
     } catch (err) {
+      console.log(err);
+
+      // backend error
       toast.error(err.response?.data?.message || "Submit failed");
     } finally {
+      // stop loading
       setSubmitting(false);
     }
   };
@@ -106,39 +153,72 @@ const PollPage = () => {
   }
 
   // -----------------------------
+  // CHECK POLL EXPIRY
+  // compares timestamps properly
+  // -----------------------------
+  const isExpired = new Date(poll?.expiresAt).getTime() < Date.now();
+
+  // -----------------------------
+  // DEBUG LOG
+  // -----------------------------
+  console.log({
+    expiresAt: poll?.expiresAt,
+
+    currentTime: new Date(),
+
+    isExpired,
+  });
+
+  // -----------------------------
   // MAIN UI
   // -----------------------------
   return (
     <div className="max-w-3xl mx-auto p-4">
-      {/* Poll Title */}
+      {/* POLL TITLE */}
       <h1 className="text-2xl font-bold mb-2">{poll?.title}</h1>
 
-      {/* Description */}
+      {/* DESCRIPTION */}
       <p className="text-gray-600 mb-6">{poll?.description}</p>
 
-      {/* Questions */}
+      {/* ----------------------------- */}
+      {/* EXPIRED MESSAGE */}
+      {/* ----------------------------- */}
+      {isExpired && (
+        <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+          This poll has expired. Voting is closed.
+        </div>
+      )}
+
+      {/* QUESTIONS */}
       <div className="space-y-6">
         {poll?.questions?.map((q) => (
           <div key={q._id} className="p-4 border rounded-lg bg-white shadow-sm">
-            {/* Question text */}
+            {/* QUESTION */}
             <h3 className="font-semibold mb-3">
               {q.question}
+
               {q.required && <span className="text-red-500 ml-1">*</span>}
             </h3>
 
-            {/* Options */}
+            {/* OPTIONS */}
             <div className="space-y-2">
               {q.options.map((opt, idx) => (
                 <label
                   key={idx}
                   className="flex items-center gap-2 cursor-pointer"
                 >
+                  {/* RADIO BUTTON */}
                   <input
                     type="radio"
                     name={q._id}
                     value={opt}
+                    // disable if poll expired
+                    disabled={isExpired}
+                    // select option
                     onChange={() => handleSelect(q._id, opt)}
                   />
+
+                  {/* OPTION TEXT */}
                   <span>{opt}</span>
                 </label>
               ))}
@@ -147,14 +227,19 @@ const PollPage = () => {
         ))}
       </div>
 
-      {/* Submit Button */}
-      <button
-        onClick={submitVote}
-        disabled={submitting}
-        className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-      >
-        {submitting ? "Submitting..." : "Submit Vote"}
-      </button>
+      {/* ----------------------------- */}
+      {/* SUBMIT BUTTON */}
+      {/* HIDE IF EXPIRED */}
+      {/* ----------------------------- */}
+      {!isExpired && (
+        <button
+          onClick={submitVote}
+          disabled={submitting}
+          className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+        >
+          {submitting ? "Submitting..." : "Submit Vote"}
+        </button>
+      )}
     </div>
   );
 };
