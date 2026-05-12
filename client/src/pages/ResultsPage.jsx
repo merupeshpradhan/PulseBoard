@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import {
   BarChart,
@@ -75,7 +75,6 @@ const ResultsPage = () => {
   // -----------------------------
   return (
     <div className="w-full max-w-5xl mx-auto p-2 sm:p-4">
-      <Toaster position="top-right" />
       {/* TITLE */}
       <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-green-700">
         📢 Final Poll Results

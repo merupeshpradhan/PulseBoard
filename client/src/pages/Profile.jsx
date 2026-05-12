@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -24,8 +24,7 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-md mx-auto p-2 sm:p-4 mt-10">
-      <Toaster position="top-right" />
+    <div className="w-full max-w-md mx-auto p-2 sm:p-4 ">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-blue-700 text-center">
         My Profile
       </h1>

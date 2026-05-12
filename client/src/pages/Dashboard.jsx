@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -63,8 +63,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-2 sm:p-6">
-      <Toaster position="top-right" />
+    <div className="w-full max-w-5xl mx-auto">
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-3 w-full">
         <h1 className="text-2xl sm:text-3xl font-bold text-blue-700">

@@ -42,7 +42,10 @@ const Navbar = () => {
         // save user data
         setUser(res.data.data);
       } catch (err) {
-        console.log("Failed to fetch user");
+        console.log("Token expired!");
+        localStorage.removeItem("token"); // This is the key!
+        setUser(null);
+        navigate("/");
       }
     };
 
@@ -61,7 +64,7 @@ const Navbar = () => {
     setUser(null);
 
     // redirect login
-    navigate("/login");
+    navigate("/");
   };
 
   // -----------------------------
@@ -87,7 +90,7 @@ const Navbar = () => {
 
       {/* Desktop menu */}
       <div className="hidden sm:flex gap-2 sm:gap-4 items-center flex-wrap">
-        {token ? (
+        {user ? (
           <>
             <p className="font-medium text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-xs">
               Hello, {user?.name || "User"}
@@ -142,7 +145,7 @@ const Navbar = () => {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="absolute top-16 left-0 w-full bg-white/95 backdrop-blur-md shadow-lg flex flex-col items-center gap-4 py-6 z-40 sm:hidden animate-fade-in rounded-b-2xl border-b border-gray-200">
-          {token ? (
+          {user ? (
             <>
               <p className="font-medium text-gray-700 text-base truncate max-w-[160px]">
                 Hello, {user?.name || "User"}

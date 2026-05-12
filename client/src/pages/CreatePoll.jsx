@@ -7,7 +7,7 @@
 // 5. Create poll
 
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
@@ -79,15 +79,14 @@ const CreatePoll = () => {
 
       toast.success("Poll created successfully");
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to create poll");
     }
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-2 sm:p-4 mt-10">
-      <Toaster position="top-right" />
+    <div className="w-full max-w-2xl mx-auto p-2 sm:p-4">
       <div className="bg-white/90 rounded-2xl shadow-xl backdrop-blur-md p-8 flex flex-col gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-700 text-center">
           Create Poll

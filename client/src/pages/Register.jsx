@@ -4,7 +4,7 @@ import { useState } from "react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,7 +28,6 @@ const Register = () => {
 
   return (
     <div className="w-full max-w-sm mx-auto p-2 sm:p-4 flex flex-col justify-center min-h-[60vh] bg-white/90 rounded-2xl shadow-xl backdrop-blur-md mt-10">
-      <Toaster position="top-right" />
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-purple-700 text-center">
         Register
       </h1>
