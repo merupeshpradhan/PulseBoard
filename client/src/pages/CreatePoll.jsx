@@ -86,11 +86,19 @@ const CreatePoll = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-2 sm:p-4">
-      <div className="bg-white/90 rounded-2xl shadow-xl backdrop-blur-md p-8 flex flex-col gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-700 text-center">
-          Create Poll
-        </h1>
+    <div className="min-h-full w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 py-10 px-2 flex flex-col items-center">
+      <div className="w-full max-w-2xl mx-auto bg-white/95 rounded-3xl shadow-2xl p-8 flex flex-col gap-5">
+        <div className="flex flex-col items-center mb-2">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-purple-400 flex items-center justify-center shadow-lg mb-2">
+            <span className="text-3xl font-bold text-white">PB</span>
+          </div>
+          <h1 className="text-3xl font-extrabold text-blue-700 tracking-tight mb-1">
+            Create Poll
+          </h1>
+          <p className="text-gray-500 text-sm">
+            Design your poll and engage your audience!
+          </p>
+        </div>
 
         {/* TITLE */}
         <input
@@ -98,7 +106,7 @@ const CreatePoll = () => {
           placeholder="Poll Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full border border-gray-300 p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+          className="w-full border border-blue-200 p-3 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base transition-all"
         />
 
         {/* DESCRIPTION */}
@@ -106,7 +114,7 @@ const CreatePoll = () => {
           placeholder="Poll Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full border border-gray-300 p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+          className="w-full border border-blue-200 p-3 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base transition-all"
           rows={3}
         />
 
@@ -116,11 +124,11 @@ const CreatePoll = () => {
           placeholder="Question"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          className="w-full border border-gray-300 p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+          className="w-full border border-blue-200 p-3 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base transition-all"
         />
 
         {/* OPTIONS */}
-        <div className="space-y-3 mb-2">
+        <div className="space-y-2 mb-2">
           {options.map((option, index) => (
             <input
               key={index}
@@ -128,14 +136,14 @@ const CreatePoll = () => {
               placeholder={`Option ${index + 1}`}
               value={option}
               onChange={(e) => handleOptionChange(index, e.target.value)}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+              className="w-full border border-blue-200 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-base transition-all"
             />
           ))}
         </div>
         {/* ADD OPTION BUTTON */}
         <button
           onClick={addOption}
-          className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded mb-2 text-sm sm:text-base transition-colors w-full font-semibold"
+          className="bg-gradient-to-r from-gray-200 to-blue-100 hover:from-blue-200 hover:to-purple-100 px-4 py-2 rounded-lg mb-2 text-base transition-colors w-full font-semibold"
         >
           + Add Option
         </button>
@@ -145,13 +153,13 @@ const CreatePoll = () => {
           type="datetime-local"
           value={expiresAt}
           onChange={(e) => setExpiresAt(e.target.value)}
-          className="w-full border border-gray-300 p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+          className="w-full border border-blue-200 p-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base transition-all"
         />
 
         {/* CREATE BUTTON */}
         <button
           onClick={createPoll}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded text-base font-semibold transition-colors shadow"
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white py-3 rounded-lg text-lg font-semibold transition-all shadow-lg"
         >
           Create Poll
         </button>
