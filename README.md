@@ -60,9 +60,7 @@ https://github.com/merupeshpradhan/PulseBoard
 
 # 🎥 Demo Video
 
-> Add your YouTube demo video link here
-
-[Watch Demo Video](YOUR_YOUTUBE_VIDEO_LINK)
+[![Watch the video](https://img.youtube.com/vi/B8AYjCnH_bA/maxresdefault.jpg)](https://youtu.be/B8AYjCnH_bA)
 
 ---
 
