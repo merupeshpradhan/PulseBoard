@@ -1,68 +1,60 @@
 # 🚀 PulseBoard
 
-A modern full-stack real-time polling and feedback platform built using the MERN Stack.  
+A modern full-stack real-time polling and feedback platform built using the MERN Stack.
+
 PulseBoard allows users to create polls, share public voting links, collect responses in real-time, and analyze voting statistics through beautiful analytics dashboards.
 
 ---
 
-## 🌐 Live Demo
+# 🌐 Live Demo
 
-### 🔗 Live Website
+## 🔗 Live Website
 https://pulseboard.rupeshpradhan.com
 
-### 💻 GitHub Repository
+## 💻 GitHub Repository
 https://github.com/merupeshpradhan/PulseBoard
 
 ---
 
 # 📸 Screenshots
 
-> Add your screenshots inside `/screenshots` folder
-
 ## Login Page
-![Login Screenshot](./screenshots/<img width="1905" height="1023" alt="image" src="https://github.com/user-attachments/assets/20d2499b-a16a-472b-9517-c04359db9f6f" />
-)
+![Login Screenshot](https://github.com/user-attachments/assets/20d2499b-a16a-472b-9517-c04359db9f6f)
 
 ---
 
 ## Register Page
-![Register Screenshot](./screenshots/<img width="1911" height="1020" alt="image" src="https://github.com/user-attachments/assets/15d99e46-9d2e-4daf-9c52-bd3905325e4d" />
-)
+![Register Screenshot](https://github.com/user-attachments/assets/15d99e46-9d2e-4daf-9c52-bd3905325e4d)
 
 ---
 
 ## Dashboard
-![Dashboard Screenshot](./screenshots/<img width="1918" height="1021" alt="image" src="https://github.com/user-attachments/assets/7491ae08-306d-43cc-95c7-213c2d9fcd49" />
-)
+![Dashboard Screenshot](https://github.com/user-attachments/assets/7491ae08-306d-43cc-95c7-213c2d9fcd49)
 
-```
+---
+
 ## Profile
-![Dashboard Screenshot](./screenshots/<img width="1916" height="1018" alt="image" src="https://github.com/user-attachments/assets/f6211e9d-4959-4f18-80ce-8a749735769c" />
-)
+![Profile Screenshot](https://github.com/user-attachments/assets/f6211e9d-4959-4f18-80ce-8a749735769c)
 
 ---
 
 ## Create Poll
-![Create Poll Screenshot](./screenshots/<img width="1914" height="1011" alt="image" src="https://github.com/user-attachments/assets/5c852f32-a4f8-4d5c-b04d-80a5103f891e" />
-)
+![Create Poll Screenshot](https://github.com/user-attachments/assets/5c852f32-a4f8-4d5c-b04d-80a5103f891e)
 
 ---
 
 ## Poll Voting Page
-![Voting Screenshot](./screenshots/<img width="1919" height="1014" alt="image" src="https://github.com/user-attachments/assets/b1d8f747-7299-440a-b3cc-b1253589870f" />
-)
+![Voting Screenshot](https://github.com/user-attachments/assets/b1d8f747-7299-440a-b3cc-b1253589870f)
 
 ---
 
 ## Poll Analytics
-![Analytics Screenshot](./screenshots/<img width="1917" height="1021" alt="image" src="https://github.com/user-attachments/assets/cf9824d3-23f7-47fe-b6f3-0186655fc866" />
-)
+![Analytics Screenshot](https://github.com/user-attachments/assets/cf9824d3-23f7-47fe-b6f3-0186655fc866)
 
 ---
 
 ## Final Results
-![Results Screenshot](./screenshots/<img width="1917" height="1020" alt="image" src="https://github.com/user-attachments/assets/8f0835ce-2b8e-458d-9557-5894aa12c9b2" />
-)
+![Results Screenshot](https://github.com/user-attachments/assets/8f0835ce-2b8e-458d-9557-5894aa12c9b2)
 
 ---
 
@@ -76,7 +68,8 @@ https://github.com/merupeshpradhan/PulseBoard
 
 # ✨ Features
 
-## 🔐 Authentication System
+# 🔐 Authentication System
+
 - User Registration
 - User Login
 - JWT Authentication
@@ -86,7 +79,8 @@ https://github.com/merupeshpradhan/PulseBoard
 
 ---
 
-## 🗳️ Poll Management
+# 🗳️ Poll Management
+
 - Create Polls
 - Dynamic Poll Options
 - Public Poll Sharing
@@ -96,7 +90,8 @@ https://github.com/merupeshpradhan/PulseBoard
 
 ---
 
-## ⚡ Real-Time Features
+# ⚡ Real-Time Features
+
 - Socket.io Real-Time Updates
 - Live Response Count
 - Instant Dashboard Notifications
@@ -104,7 +99,8 @@ https://github.com/merupeshpradhan/PulseBoard
 
 ---
 
-## 📊 Analytics System
+# 📊 Analytics System
+
 - Dynamic Bar Charts
 - Total Vote Counts
 - Option Wise Statistics
@@ -113,7 +109,8 @@ https://github.com/merupeshpradhan/PulseBoard
 
 ---
 
-## 🎨 Frontend Features
+# 🎨 Frontend Features
+
 - Responsive UI
 - Tailwind CSS Design
 - React Router Navigation
@@ -124,7 +121,8 @@ https://github.com/merupeshpradhan/PulseBoard
 
 # 🛠️ Tech Stack
 
-## Frontend
+# Frontend
+
 - React.js
 - Vite
 - Tailwind CSS
@@ -136,7 +134,8 @@ https://github.com/merupeshpradhan/PulseBoard
 
 ---
 
-## Backend
+# Backend
+
 - Node.js
 - Express.js
 - MongoDB
@@ -251,7 +250,7 @@ CLIENT_URL=http://localhost:5173
 
 # 🚀 Installation & Setup
 
-## 1️⃣ Clone Repository
+# 1️⃣ Clone Repository
 
 ```bash
 git clone https://github.com/merupeshpradhan/PulseBoard.git
@@ -259,7 +258,7 @@ git clone https://github.com/merupeshpradhan/PulseBoard.git
 
 ---
 
-## 2️⃣ Navigate Into Project
+# 2️⃣ Navigate Into Project
 
 ```bash
 cd PulseBoard
@@ -267,7 +266,7 @@ cd PulseBoard
 
 ---
 
-## 3️⃣ Install Frontend Dependencies
+# 3️⃣ Install Frontend Dependencies
 
 ```bash
 cd client
@@ -276,7 +275,7 @@ npm install
 
 ---
 
-## 4️⃣ Install Backend Dependencies
+# 4️⃣ Install Backend Dependencies
 
 ```bash
 cd ../server
@@ -285,7 +284,7 @@ npm install
 
 ---
 
-## 5️⃣ Run Backend Server
+# 5️⃣ Run Backend Server
 
 ```bash
 npm run dev
@@ -299,7 +298,7 @@ http://localhost:4000
 
 ---
 
-## 6️⃣ Run Frontend
+# 6️⃣ Run Frontend
 
 ```bash
 cd ../client
@@ -346,6 +345,7 @@ http://localhost:5173
 PulseBoard uses Socket.io for real-time communication.
 
 ## Real-Time Features
+
 - Instant vote updates
 - Live dashboard notifications
 - Real-time analytics updates
@@ -364,6 +364,7 @@ The analytics dashboard provides:
 - Interactive chart visualization
 
 Built using:
+
 - Recharts
 - ResponsiveContainer
 - BarChart
@@ -372,7 +373,7 @@ Built using:
 
 # 🔒 Authentication Flow
 
-## User Authentication Process
+# User Authentication Process
 
 1. User registers/login
 2. JWT token generated
@@ -417,13 +418,13 @@ This project demonstrates:
 
 # 👨‍💻 Author
 
-## Rupesh Pradhan
+# Rupesh Pradhan
 
 Full Stack MERN Developer
 
-### Connect With Me
+## Connect With Me
 
-#### GitHub
+### GitHub
 https://github.com/merupeshpradhan
 
 ---
@@ -451,6 +452,6 @@ This project is licensed under the MIT License.
 ✅ Authentication Implemented  
 ✅ Realtime Voting Implemented  
 ✅ Analytics Dashboard Implemented  
-✅ Deployment Completed  
+✅ Deployment Completed
 
 ---
