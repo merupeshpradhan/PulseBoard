@@ -36,7 +36,7 @@ https://github.com/merupeshpradhan/PulseBoard
 )
 
 ```
-### Profile
+## Profile
 ![Dashboard Screenshot](./screenshots/<img width="1916" height="1018" alt="image" src="https://github.com/user-attachments/assets/f6211e9d-4959-4f18-80ce-8a749735769c" />
 )
 
