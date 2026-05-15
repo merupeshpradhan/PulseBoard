@@ -60,7 +60,7 @@ https://github.com/merupeshpradhan/PulseBoard
 
 # 🎥 Demo Video
 
-[![Watch the video](https://img.youtube.com/vi/B8AYjCnH_bA/maxresdefault.jpg)](https://youtu.be/B8AYjCnH_bA)
+[![Watch the video](https://youtu.be/B8AYjCnH_bA)
 
 ---
 
