@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import socket from "../socket/socket";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
@@ -28,6 +29,38 @@ const Dashboard = () => {
 
     fetchPolls();
   }, []);
+
+  // 🔥 ADDED: SOCKET REALTIME LISTENER FOR CREATOR DASHBOARD
+  useEffect(() => {
+    socket.on("poll-response-updated", (data) => {
+      // 1. Check if the incoming vote belongs to any poll on the creator's dashboard
+      const holdsPoll = polls.some((p) => p._id === data.pollId);
+
+      if (holdsPoll) {
+        // 2. Play the fire toast notification instantly!
+        toast.success("New response received 🔥");
+
+        // 3. OPTIONAL BONUS: Instantly increments response numbers on screen without page reloads
+        setPolls((prevPolls) =>
+          prevPolls.map((poll) => {
+            if (poll._id === data.pollId) {
+              const currentResponses = poll.responses || [];
+              return {
+                ...poll,
+                responses: [...currentResponses, { _id: Date.now() }], // Appends a mock response item to update the UI length counter
+              };
+            }
+            return poll;
+          }),
+        );
+      }
+    });
+
+    // Clean up socket listener on unmount to prevent duplicate memory leaks
+    return () => {
+      socket.off("poll-response-updated");
+    };
+  }, [polls]); // Tracks the polls array dependency to verify matches correctly
 
   // PUBLISH POLL
   const publishPoll = async (id) => {

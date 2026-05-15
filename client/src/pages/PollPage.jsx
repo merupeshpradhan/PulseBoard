@@ -1,3 +1,11 @@
+// PollPage.jsx
+// This page:
+// 1. Shows public poll
+// 2. Allows users to vote
+// 3. Supports anonymous voting
+// 4. Shows realtime updates
+// 5. Prevents voting after poll expiry
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/api";
@@ -39,18 +47,14 @@ const PollPage = () => {
   useEffect(() => {
     socket.on("poll-response-updated", (data) => {
       if (data.pollId === id) {
-        if (justVoted) {
-          setJustVoted(false);
-        } else {
-          toast.success("New response received 🔥");
-        }
+        // i safely reset our internal submit flag without showing intrusive pop-ups to the voter
+        setJustVoted(false);
       }
     });
-
     return () => {
       socket.off("poll-response-updated");
     };
-  }, [id, justVoted]);
+  }, [id]);
 
   const handleSelect = (questionId, option) => {
     setSelectedAnswers((prev) => ({
@@ -133,7 +137,7 @@ const PollPage = () => {
             </p>
             <div className="flex gap-4 w-full justify-center flex-wrap">
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/dashboard")}
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md transition-all cursor-pointer text-base"
               >
                 Go to Homepage

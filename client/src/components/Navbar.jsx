@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { HiMenu, HiX } from "react-icons/hi"; 
+import { HiMenu, HiX } from "react-icons/hi";
 import { HiMenu as MenuIcon, HiX as CloseIcon } from "react-icons/hi";
 import api from "../services/api";
 
