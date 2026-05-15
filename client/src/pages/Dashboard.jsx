@@ -67,7 +67,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 py-10 px-2 flex flex-col items-center">
-      <div className="w-full max-w-5xl mx-auto">
+      <div className="w-full max-w-7xl mx-auto flex flex-col items-center">
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-3 w-full">
           <div className="flex items-center gap-3">
@@ -80,7 +80,7 @@ const Dashboard = () => {
           </div>
           <button
             onClick={() => navigate("/create")}
-            className="bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white px-6 py-2 rounded-lg text-lg font-semibold transition-all shadow-lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white px-6 py-2 rounded-lg text-lg font-semibold transition-all shadow-lg cursor-pointer"
           >
             + Create Poll
           </button>
@@ -106,7 +106,7 @@ const Dashboard = () => {
           {polls.map((poll) => (
             <div
               key={poll._id}
-              className="p-6 border border-gray-100 rounded-3xl shadow-xl bg-white/95 backdrop-blur-md flex flex-col justify-between min-h-[240px] hover:scale-[1.03] hover:shadow-2xl transition-all duration-200 overflow-hidden relative"
+              className="p-6 border border-gray-100 rounded-3xl shadow-xl bg-white/95 backdrop-blur-md flex flex-col justify-between min-h-[150px] hover:scale-[1.03] hover:shadow-2xl transition-all duration-200 overflow-hidden relative"
             >
               {/* TITLE */}
               <h2 className="text-xl font-bold mb-2 truncate break-words text-blue-700">
@@ -126,24 +126,24 @@ const Dashboard = () => {
               </div>
 
               {/* ACTION BUTTONS */}
-              <div className="flex gap-2 mt-auto flex-wrap w-full">
+              <div className="flex gap-2 mt-5 flex-wrap justify-center w-full">
                 <button
                   onClick={() => navigate(`/poll/${poll._id}`)}
-                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm sm:text-base transition-colors font-medium"
+                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
                 >
                   View
                 </button>
 
                 <button
                   onClick={() => sharePoll(poll._id)}
-                  className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm sm:text-base transition-colors font-medium"
+                  className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
                 >
                   Share Link
                 </button>
 
                 <button
                   onClick={() => navigate(`/analytics/${poll._id}`)}
-                  className="px-3 py-1 bg-blue-200 hover:bg-blue-300 rounded-lg text-sm sm:text-base transition-colors font-medium"
+                  className="px-3 py-1 bg-blue-200 hover:bg-blue-300 rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
                 >
                   Analytics
                 </button>
@@ -158,7 +158,7 @@ const Dashboard = () => {
                 {poll.isPublished && (
                   <button
                     onClick={() => navigate(`/results/${poll._id}`)}
-                    className="px-3 py-1 bg-green-200 hover:bg-green-300 rounded-lg text-sm sm:text-base transition-colors font-medium"
+                    className="px-3 py-1 bg-green-200 hover:bg-green-300 rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
                   >
                     Results
                   </button>
@@ -167,7 +167,7 @@ const Dashboard = () => {
                 {!poll.isPublished && (
                   <button
                     onClick={() => publishPoll(poll._id)}
-                    className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm sm:text-base transition-colors font-medium"
+                    className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
                   >
                     Publish
                   </button>

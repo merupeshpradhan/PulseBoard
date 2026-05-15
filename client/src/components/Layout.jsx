@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
       <Navbar />
 
       {/* Page content */}
-      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4">
         {children}
       </main>
     </div>

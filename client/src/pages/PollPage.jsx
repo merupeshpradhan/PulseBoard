@@ -151,7 +151,7 @@ const PollPage = () => {
   // MAIN UI
   // -----------------------------
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 py-10 px-2 flex flex-col items-center">
+    <div className="min-h-full w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 pt-8 px-2 flex flex-col items-center">
       <div className="w-full max-w-3xl mx-auto bg-white/95 rounded-3xl shadow-2xl p-8 flex flex-col gap-6">
         {/* POLL TITLE */}
         <div className="flex flex-col items-center mb-2">
@@ -218,7 +218,7 @@ const PollPage = () => {
           <button
             onClick={submitVote}
             disabled={submitting}
-            className="mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white py-3 rounded-lg text-lg font-semibold transition-all shadow-lg disabled:opacity-50"
+            className="mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 text-white py-3 rounded-lg text-lg font-semibold transition-all shadow-lg disabled:opacity-50 cursor-pointer"
           >
             {submitting ? "Submitting..." : "Submit Vote"}
           </button>

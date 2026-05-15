@@ -77,7 +77,7 @@ const ResultsPage = () => {
   // MAIN UI
   // -----------------------------
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 py-10 px-2 flex flex-col items-center">
+    <div className="min-h-full w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 py-3 px-2 flex flex-col items-center">
       <div className="w-full max-w-5xl mx-auto p-2 sm:p-4">
         {/* TITLE */}
         <div className="flex items-center gap-3 mb-4">

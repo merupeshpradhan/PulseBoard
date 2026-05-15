@@ -1,83 +1,80 @@
-// Navbar.jsx
-// This navbar:
-// 1. Checks login status
-// 2. Fetches current user using getMe API
-// 3. Shows username
-// 4. Handles logout
-// 5. Hides dashboard/create on public poll page
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
+import { HiMenu, HiX } from "react-icons/hi"; 
+import { HiMenu as MenuIcon, HiX as CloseIcon } from "react-icons/hi";
 import api from "../services/api";
 
 const Navbar = () => {
-  // page navigation
   const navigate = useNavigate();
-
-  // current route
   const location = useLocation();
 
-  // logged in token
-  const token = localStorage.getItem("token");
-
-  // current user state
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [user, setUser] = useState(null);
-  // mobile menu state
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // -----------------------------
+  // LISTEN TO STORAGE CHANGES
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setToken(localStorage.getItem("token"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   // FETCH CURRENT USER
-  // calls backend getMe API
-  // -----------------------------
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      try {
-        // if no token stop request
-        if (!token) return;
+      const activeToken = localStorage.getItem("token");
 
-        // backend request
-        const res = await api.get("/auth/me");
-
-        // save user data
-        setUser(res.data.data);
-      } catch (err) {
-        console.log("Token expired!");
-        localStorage.removeItem("token"); // This is the key!
+      if (!activeToken) {
         setUser(null);
-        navigate("/");
+        return;
+      }
+
+      try {
+        // 💡 FIXED: Passes token explicitly in the request headers to eliminate refresh lag!
+        const res = await api.get("/auth/me", {
+          headers: {
+            Authorization: `Bearer ${activeToken}`,
+          },
+        });
+
+        // 💡 FIXED DATA EXTRACTION: Tries nested data object first, falls back to direct base payload object
+        const profileData = res.data?.data || res.data;
+        setUser(profileData);
+      } catch (err) {
+        console.error("Profile load or token check validation failed:", err);
+        // Only wipe the token if the server explicitly tells us the authentication failed (401/403)
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("token");
+          setUser(null);
+          navigate("/");
+        }
       }
     };
 
     fetchCurrentUser();
-  }, [token]);
+  }, [token, location.pathname]); // Removed navigate from dependencies to prevent infinite render loops
 
-  // -----------------------------
-  // LOGOUT FUNCTION
-  // removes token
-  // -----------------------------
   const handleLogout = () => {
-    // remove token
     localStorage.removeItem("token");
-
-    // clear user state
+    window.dispatchEvent(new Event("storage"));
     setUser(null);
-
-    // redirect login
+    setMenuOpen(false);
     navigate("/");
   };
 
-  // -----------------------------
-  // CHECK PUBLIC POLL PAGE
-  // -----------------------------
   const isPublicPollPage = location.pathname.startsWith("/poll/");
 
   return (
     <nav className="bg-white/80 backdrop-blur-md shadow-lg px-4 sm:px-8 py-3 flex justify-between items-center w-full sticky top-0 z-30 rounded-b-2xl border-b border-gray-200">
       {/* LOGO */}
-      <h1 className="font-extrabold text-xl sm:text-2xl text-blue-700 tracking-tight select-none drop-shadow">
+      <Link
+        to={user ? "/dashboard" : "/"}
+        className="font-extrabold text-xl sm:text-2xl text-blue-700 tracking-tight select-none drop-shadow"
+      >
         PulseBoard
-      </h1>
+      </Link>
 
       {/* Hamburger for mobile */}
       <button
@@ -85,33 +82,33 @@ const Navbar = () => {
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-label={menuOpen ? "Close menu" : "Open menu"}
       >
-        {menuOpen ? <HiX /> : <HiMenu />}
+        {menuOpen ? <CloseIcon /> : <MenuIcon />}
       </button>
 
       {/* Desktop menu */}
       <div className="hidden sm:flex gap-2 sm:gap-4 items-center flex-wrap">
         {user ? (
           <>
-            <p className="font-medium text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-xs">
+            <p className="font-medium text-gray-700 text-sm sm:text-base truncate max-w-full sm:max-w-xs mr-2">
               Hello, {user?.name || "User"}
             </p>
             {!isPublicPollPage && (
               <>
                 <Link
                   to="/dashboard"
-                  className="hover:text-blue-600 transition-colors text-sm sm:text-base"
+                  className="hover:text-blue-600 transition-colors text-sm sm:text-base font-medium"
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/profile"
-                  className="hover:text-blue-600 transition-colors text-sm sm:text-base"
+                  className="hover:text-blue-600 transition-colors text-sm sm:text-base font-medium"
                 >
                   Profile
                 </Link>
                 <Link
                   to="/create"
-                  className="hover:text-blue-600 transition-colors text-sm sm:text-base"
+                  className="hover:text-blue-600 transition-colors text-sm sm:text-base font-medium"
                 >
                   Create Poll
                 </Link>
@@ -119,7 +116,7 @@ const Navbar = () => {
             )}
             <button
               onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm sm:text-base transition-colors"
+              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base transition-colors font-medium ml-2 cursor-pointer"
             >
               Logout
             </button>
@@ -144,31 +141,31 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="absolute top-16 left-0 w-full bg-white/95 backdrop-blur-md shadow-lg flex flex-col items-center gap-4 py-6 z-40 sm:hidden animate-fade-in rounded-b-2xl border-b border-gray-200">
+        <div className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg flex flex-col items-center gap-4 py-4 z-40 sm:hidden rounded-b-2xl border-b border-gray-200">
           {user ? (
             <>
-              <p className="font-medium text-gray-700 text-base truncate max-w-[160px]">
+              <p className="font-medium text-gray-700 text-base truncate max-w-full">
                 Hello, {user?.name || "User"}
               </p>
               {!isPublicPollPage && (
                 <>
                   <Link
-                    to="/"
-                    className="hover:text-blue-600 transition-colors text-base"
+                    to="/dashboard"
+                    className="hover:text-blue-600 transition-colors text-base font-medium"
                     onClick={() => setMenuOpen(false)}
                   >
                     Dashboard
                   </Link>
                   <Link
                     to="/profile"
-                    className="hover:text-blue-600 transition-colors text-base"
+                    className="hover:text-blue-600 transition-colors text-base font-medium"
                     onClick={() => setMenuOpen(false)}
                   >
                     Profile
                   </Link>
                   <Link
                     to="/create"
-                    className="hover:text-blue-600 transition-colors text-base"
+                    className="hover:text-blue-600 transition-colors text-base font-medium"
                     onClick={() => setMenuOpen(false)}
                   >
                     Create Poll
@@ -180,7 +177,7 @@ const Navbar = () => {
                   setMenuOpen(false);
                   handleLogout();
                 }}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-base transition-colors mt-2"
+                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg text-base transition-colors mt-2 font-medium cursor-pointer"
               >
                 Logout
               </button>
@@ -188,7 +185,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link
-                to="/login"
+                to="/"
                 className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold text-base transition-colors shadow w-32 text-center"
                 onClick={() => setMenuOpen(false)}
               >
