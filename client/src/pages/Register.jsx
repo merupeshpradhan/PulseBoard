@@ -27,7 +27,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-full flex items-center justify-center from-purple-200 via-blue-100 to-pink-100 py-2 px-2">
+    <div className="min-h-full flex items-center justify-center from-purple-200 via-blue-100 to-pink-100 py-2 px-2 mt-10">
       <div className="w-full max-w-md bg-white/95 rounded-3xl shadow-2xl p-8 flex flex-col items-center">
         <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-400 to-blue-400 flex items-center justify-center mb-4 shadow-lg">
           <span className="text-4xl font-bold text-white">PB</span>

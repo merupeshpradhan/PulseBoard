@@ -11,7 +11,8 @@ const createPoll = async (req, res) => {
 
 // Get poll
 const getPoll = async (req, res) => {
-  const poll = await pollService.getPoll(req.params.id);
+  const userId = req.user?.id || req.user?._id || null;
+  const poll = await pollService.getPoll(req.params.id, userId);
 
   ApiResponse.ok(res, "Poll fetched successfully", poll);
 };

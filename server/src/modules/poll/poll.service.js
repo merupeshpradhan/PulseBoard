@@ -1,5 +1,4 @@
 import Poll from "./poll.model.js";
-
 import ApiError from "../../common/utils/api-error.js";
 
 // -----------------------------
@@ -13,7 +12,6 @@ const createPoll = async (data, userId) => {
   // create poll in database
   const poll = await Poll.create({
     ...data,
-
     createdBy: userId,
   });
 
@@ -38,27 +36,24 @@ const createPoll = async (data, userId) => {
 // ✔ disabled voting
 // ✔ hidden submit button
 // -----------------------------
-const getPoll = async (pollId) => {
-  // find poll by id
+
+const getPoll = async (pollId, userId) => {
   const poll = await Poll.findById(pollId);
 
-  // check poll exists
   if (!poll) {
     throw ApiError.notFound("Poll not found");
   }
 
-  // IMPORTANT:
-  // Do NOT throw expiry error here
-  //
-  // OLD CODE REMOVED:
-  //
-  // if (new Date() > new Date(poll.expiresAt)) {
-  //   throw ApiError.badRequest("Poll expired");
-  // }
-  //
-  // Frontend handles expiry UI
+  // 💡 THE FIX: Block access if the poll is a draft and the user is not the owner
+  if (!poll.isPublished) {
+    const isOwner = userId && poll.createdBy.toString() === userId.toString();
+    if (!isOwner) {
+      throw ApiError.badRequest(
+        "This poll is a draft and cannot be viewed until published.",
+      );
+    }
+  }
 
-  // return poll data
   return poll;
 };
 
@@ -89,21 +84,20 @@ const getMyPolls = async (userId) => {
 // 5. Saves responses
 // 6. Sends realtime updates
 // -----------------------------
-const submitResponse = async (
-  pollId,
-
-  data,
-
-  user,
-
-  io,
-) => {
+const submitResponse = async (pollId, data, user, io) => {
   // find poll
   const poll = await Poll.findById(pollId);
 
   // check poll exists
   if (!poll) {
     throw ApiError.notFound("Poll not found");
+  }
+
+  // 💡 THE FIX: Completely block anyone from voting on an unpublished draft
+  if (!poll.isPublished) {
+    throw ApiError.badRequest(
+      "Voting is disabled because this poll has not been published yet.",
+    );
   }
 
   // -----------------------------
@@ -249,11 +243,9 @@ const publishResults = async (pollId) => {
   // update poll
   const poll = await Poll.findByIdAndUpdate(
     pollId,
-
     {
       isPublished: true,
     },
-
     {
       new: true,
     },

@@ -1,15 +1,9 @@
 import { Router } from "express";
-
 import * as controller from "./poll.controller.js";
-
 import { authenticate } from "../auth/auth.middleware.js";
-
 import optionalAuth from "../auth/optional-auth.middleware.js";
-
 import validate from "../../common/middleware/validate.middleware.js";
-
 import CreatePollDto from "./dto/create-poll.dto.js";
-
 import SubmitResponseDto from "./dto/submit-response.dto.js";
 
 const router = Router();
@@ -43,6 +37,9 @@ router.patch("/publish/:id", authenticate, controller.publishResults);
 router.get("/my-polls", authenticate, controller.getMyPolls);
 
 // Public poll
-router.get("/:id", controller.getPoll);
+// router.get("/:id", controller.getPoll);
+
+// Public poll (Allows owner to preview draft, blocks strangers)
+router.get("/:id", optionalAuth, controller.getPoll);
 
 export default router;

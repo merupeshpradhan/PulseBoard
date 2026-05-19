@@ -1,6 +1,7 @@
-// All page routing defined here
+// AppRoutes.jsx
+// Handles explicit route separation and authentication gates
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -11,18 +12,94 @@ import Analytics from "../pages/Analytics";
 import ResultsPage from "../pages/ResultsPage";
 import Profile from "../pages/Profile";
 
+// 🔒 PROTECTED ROUTE WRAPPER
+// Restricts access to logged-in users only
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
+// 🔓 PUBLIC ONLY ROUTE WRAPPER
+// Redirects logged-in users away from Login/Register pages straight to Dashboard
+const PublicRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+};
+
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      {/* Public Pages: Redirects to dashboard if already logged in */}
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
 
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/create" element={<CreatePoll />} />
+      {/* Private Pages: Shielded from unauthenticated visitors */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create"
+        element={
+          <ProtectedRoute>
+            <CreatePoll />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/analytics/:id"
+        element={
+          <ProtectedRoute>
+            <Analytics />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/results/:id"
+        element={
+          <ProtectedRoute>
+            <ResultsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Public Voter View (Keep accessible to everyone always) */}
       <Route path="/poll/:id" element={<PollPage />} />
-      <Route path="/analytics/:id" element={<Analytics />} />
-      <Route path="/results/:id" element={<ResultsPage />} />
+
+      {/* Catch-all Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

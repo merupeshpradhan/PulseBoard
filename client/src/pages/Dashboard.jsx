@@ -17,9 +17,8 @@ const Dashboard = () => {
     const fetchPolls = async () => {
       try {
         setLoading(true);
-
         const res = await api.get("/polls/my-polls");
-        setPolls(res.data.data);
+        setPolls(res.data.data || res.data);
       } catch (err) {
         toast.error("Failed to load polls");
       } finally {
@@ -30,43 +29,38 @@ const Dashboard = () => {
     fetchPolls();
   }, []);
 
-  // 🔥 ADDED: SOCKET REALTIME LISTENER FOR CREATOR DASHBOARD
+  // SOCKET REALTIME LISTENER
   useEffect(() => {
-    socket.on("poll-response-updated", (data) => {
-      // 1. Check if the incoming vote belongs to any poll on the creator's dashboard
-      const holdsPoll = polls.some((p) => p._id === data.pollId);
+    const handlePollUpdate = (data) => {
+      setPolls((prevPolls) => {
+        const holdsPoll = prevPolls.some((p) => p._id === data.pollId);
+        if (!holdsPoll) return prevPolls;
 
-      if (holdsPoll) {
-        // 2. Play the fire toast notification instantly!
         toast.success("New response received 🔥");
 
-        // 3. OPTIONAL BONUS: Instantly increments response numbers on screen without page reloads
-        setPolls((prevPolls) =>
-          prevPolls.map((poll) => {
-            if (poll._id === data.pollId) {
-              const currentResponses = poll.responses || [];
-              return {
-                ...poll,
-                responses: [...currentResponses, { _id: Date.now() }], // Appends a mock response item to update the UI length counter
-              };
-            }
-            return poll;
-          }),
-        );
-      }
-    });
-
-    // Clean up socket listener on unmount to prevent duplicate memory leaks
-    return () => {
-      socket.off("poll-response-updated");
+        return prevPolls.map((poll) => {
+          if (poll._id === data.pollId) {
+            const currentResponses = poll.responses || [];
+            return {
+              ...poll,
+              responses: [...currentResponses, { _id: Date.now() }],
+            };
+          }
+          return poll;
+        });
+      });
     };
-  }, [polls]); // Tracks the polls array dependency to verify matches correctly
+
+    socket.on("poll-response-updated", handlePollUpdate);
+    return () => {
+      socket.off("poll-response-updated", handlePollUpdate);
+    };
+  }, []);
 
   // PUBLISH POLL
   const publishPoll = async (id) => {
     try {
       await api.patch(`/polls/publish/${id}`);
-
       toast.success("Poll published 🎉");
 
       setPolls((prev) =>
@@ -77,7 +71,7 @@ const Dashboard = () => {
     }
   };
 
-  // SHARE LINK FUNCTION ⭐ IMPORTANT
+  // SHARE LINK FUNCTION
   const sharePoll = (id) => {
     const link = `${window.location.origin}/poll/${id}`;
     navigator.clipboard.writeText(link);
@@ -87,7 +81,7 @@ const Dashboard = () => {
   // LOADING
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mb-4"></div>
           <h2 className="text-xl font-bold text-blue-700 animate-pulse">
@@ -99,8 +93,8 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 py-10 px-2 flex flex-col items-center">
-      <div className="w-full max-w-7xl mx-auto flex flex-col items-center">
+    <div className="w-full py-6 px-1 flex flex-col items-center">
+      <div className="w-full flex flex-col items-center">
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-3 w-full">
           <div className="flex items-center gap-3">
@@ -119,88 +113,88 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* EMPTY */}
+        {/* EMPTY STATE */}
         {polls.length === 0 && (
-          <div className="flex flex-col items-center justify-center mt-24">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-purple-200 to-blue-200 flex items-center justify-center mb-4">
-              <span className="text-4xl">📭</span>
+          <div className="flex flex-col items-center justify-center mt-20">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-200 to-blue-200 flex items-center justify-center mb-4">
+              <span className="text-3xl">📭</span>
             </div>
-            <div className="text-center text-gray-500 text-lg font-medium">
+            <div className="text-center text-gray-500 font-medium">
               No polls created yet
             </div>
-            <div className="text-center text-gray-400 text-sm mt-1">
+            <div className="text-center text-gray-400 text-xs mt-1">
               Start by creating your first poll!
             </div>
           </div>
         )}
 
-        {/* POLLS */}
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full">
+        {/* POLLS CARDS GRID */}
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full">
           {polls.map((poll) => (
             <div
               key={poll._id}
-              className="p-6 border border-gray-100 rounded-3xl shadow-xl bg-white/95 backdrop-blur-md flex flex-col justify-between min-h-[150px] hover:scale-[1.03] hover:shadow-2xl transition-all duration-200 overflow-hidden relative"
+              className="p-5 border border-gray-100/80 rounded-3xl shadow-lg bg-white/95 backdrop-blur-sm flex flex-col justify-between min-h-[160px] hover:shadow-xl transition-all duration-200 overflow-hidden relative"
             >
               {/* TITLE */}
-              <h2 className="text-xl font-bold mb-2 truncate break-words text-blue-700">
-                {poll.title}
-              </h2>
-
-              {/* INFO */}
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">
-                  {poll.responses?.length || 0} Responses
-                </span>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full font-semibold ${poll.isPublished ? "bg-green-100 text-green-700" : "bg-red-100 text-red-500"}`}
+              <div>
+                <h2
+                  className="text-lg font-bold mb-2 truncate text-blue-700"
+                  title={poll.title}
                 >
-                  {poll.isPublished ? "Published" : "Draft"}
-                </span>
+                  {poll.title}
+                </h2>
+
+                {/* INFO STATUS CHIPS */}
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-[11px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-bold border border-blue-100">
+                    {poll.responses?.length || 0} Responses
+                  </span>
+                  <span
+                    className={`text-[11px] px-2 py-0.5 rounded-full font-bold border ${
+                      poll.isPublished
+                        ? "bg-green-50 text-green-700 border-green-100"
+                        : "bg-red-50 text-red-500 border-red-100"
+                    }`}
+                  >
+                    {poll.isPublished ? "Published" : "Draft"}
+                  </span>
+                </div>
               </div>
 
-              {/* ACTION BUTTONS */}
-              <div className="flex gap-2 mt-5 flex-wrap justify-center w-full">
+              {/* ACTION COMMAND BUTTONS CONTAINER */}
+              <div className="flex gap-1.5 mt-2 flex-wrap justify-start w-full">
                 <button
                   onClick={() => navigate(`/poll/${poll._id}`)}
-                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
+                  className="flex-1 min-w-[60px] py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition-colors border border-gray-200/60 cursor-pointer text-center"
                 >
                   View
                 </button>
 
                 <button
                   onClick={() => sharePoll(poll._id)}
-                  className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
+                  className="flex-1 min-w-[85px] py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-semibold transition-colors shadow-sm cursor-pointer text-center"
                 >
                   Share Link
                 </button>
 
                 <button
                   onClick={() => navigate(`/analytics/${poll._id}`)}
-                  className="px-3 py-1 bg-blue-200 hover:bg-blue-300 rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
+                  className="flex-1 min-w-[75px] py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold transition-colors border border-blue-100 cursor-pointer text-center"
                 >
                   Analytics
                 </button>
 
-                {/*
-                  RESULTS BUTTON
-                  Only visible after poll is published
-                  This prevents users from opening
-                  public results before publish
-                */}
-
-                {poll.isPublished && (
+                {poll.isPublished ? (
                   <button
                     onClick={() => navigate(`/results/${poll._id}`)}
-                    className="px-3 py-1 bg-green-200 hover:bg-green-300 rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
+                    className="w-full mt-1 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold transition-colors border border-emerald-100 cursor-pointer text-center"
                   >
                     Results
                   </button>
-                )}
-
-                {!poll.isPublished && (
+                ) : (
                   <button
                     onClick={() => publishPoll(poll._id)}
-                    className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm sm:text-base transition-colors font-medium cursor-pointer"
+                    className="w-full mt-1 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm cursor-pointer text-center"
                   >
                     Publish
                   </button>
